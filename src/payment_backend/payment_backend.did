@@ -1,1 +1,6 @@
-service : { get_latest_external_transfer : (nat64) -> (nat64) }
+service : {
+  get_latest_block : () -> (nat64) query;
+  get_latest_external_transfer : (nat64) -> (nat64);
+  get_transaction_value : (text) -> (text) query;
+  get_transactions : () -> (vec text) query;
+}

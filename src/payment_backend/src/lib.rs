@@ -4,49 +4,22 @@ use b3_utils::{
     hex_string_with_0x_to_u64, log_cycle,
     memory::{
         init_stable_mem_refcell,
-        timer::DefaultTaskTimer,
-        types::{Bound, DefaultVMCell, DefaultVMMap, Storable},
+        types::{DefaultVMCell, DefaultVMMap},
     },
     outcall::{HttpOutcall, HttpOutcallResponse},
     report_log, u64_to_hex_string_with_0x,
 };
-use candid::CandidType;
 use ic_cdk::{query, update};
-use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::cell::RefCell;
 
 thread_local! {
-    static TASK_TIMER: RefCell<DefaultTaskTimer<Task>> = init_stable_mem_refcell("timer", 1).unwrap();
-    static EXTERNAL_TRANSFERS: RefCell<DefaultVMMap<String, String>> = init_stable_mem_refcell("external_transfers", 2).unwrap();
-    static LATEST_BLOCK: RefCell<DefaultVMCell<u64>> = init_stable_mem_refcell("latest_block", 3).unwrap();
+    static EXTERNAL_TRANSFERS: RefCell<DefaultVMMap<String, String>> = init_stable_mem_refcell("external_transfers", 1).unwrap();
+    static LATEST_BLOCK: RefCell<DefaultVMCell<u64>> = init_stable_mem_refcell("latest_block", 2).unwrap();
 }
 
 const RECIPIENT: &str = "0xB51f94aEEebE55A3760E8169A22e536eBD3a6DCB";
 const URL: &str = "https://eth-sepolia.g.alchemy.com/v2/ZpSPh3E7KZQg4mb3tN8WFXxG4Auntbxp";
-
-#[derive(Debug, Clone, CandidType, Serialize, Deserialize)]
-enum Task {
-    GetLatestExternalTransfer(String),
-    GetTransactionValue(String),
-    GetTransactionReceiptFrom(String),
-    VerifyTransaction(String),
-}
-
-impl Storable for Task {
-    const BOUND: Bound = Bound::Bounded {
-        max_size: 32,
-        is_fixed_size: false,
-    };
-
-    fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
-        candid::decode_one(bytes.as_ref()).unwrap()
-    }
-
-    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
-        candid::encode_one(self).unwrap().into()
-    }
-}
 
 async fn get_asset_transfers(from_block: String) -> Result<transfer::Result, String> {
     let params = json!({
@@ -86,6 +59,15 @@ async fn get_asset_transfers(from_block: String) -> Result<transfer::Result, Str
         },
         Err(e) => Err(format!("Error: {}", e)),
     }
+}
+
+#[query]
+fn get_latest_block() -> u64 {
+    LATEST_BLOCK.with(|r| {
+        let r = r.borrow();
+
+        r.get().clone()
+    })
 }
 
 #[query]
