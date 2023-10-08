@@ -1,0 +1,30 @@
+{
+  "canisters": {
+    "payment_backend": {
+      "candid": "src/payment_backend/payment_backend.did",
+      "package": "payment_backend",
+      "type": "rust"
+    },
+    "payment_frontend": {
+      "dependencies": [
+        "payment_backend"
+      ],
+      "frontend": {
+        "entrypoint": "src/payment_frontend/src/index.html"
+      },
+      "source": [
+        "src/payment_frontend/assets",
+        "dist/payment_frontend/"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
