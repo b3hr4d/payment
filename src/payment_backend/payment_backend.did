@@ -1,6 +1,14 @@
+type HttpHeader = record { value : text; name : text };
+type HttpResponse = record {
+  status : nat;
+  body : vec nat8;
+  headers : vec HttpHeader;
+};
+type Result = variant { Ok : HttpResponse; Err : text };
 service : {
-  get_latest_block : () -> (nat64) query;
+  get_asset_transfers : (text) -> (Result);
   get_latest_external_transfer : (nat64) -> (nat64);
-  get_transaction_value : (text) -> (text) query;
+  get_latest_fetched_block : () -> (nat64) query;
+  get_transaction_value : (text) -> (float64) query;
   get_transactions : () -> (vec text) query;
 }

@@ -9,7 +9,12 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-b3_utils = { version = "0.5.1", features = ["stable_memory", "logging"] }
+b3_utils = { version = "0.6.0", features = [
+    "stable_memory",
+    "ledger",
+    "logging",
+    "owner",
+] }
 candid = "0.9.9"
 ic-cdk = "0.11.0"
 serde = "1.0.188"
