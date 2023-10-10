@@ -1,4 +1,2 @@
 [workspace]
-members = [
-    "src/payment_backend",
-]
+members = ["src/payment_backend"]

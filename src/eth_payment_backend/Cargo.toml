@@ -8,11 +8,6 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib"]
 
-[[bin]]
-name = "cketh-principal-to-hex"
-path = "bin/principal_to_hex.rs"
-
-
 [dependencies]
 b3_utils = { version = "0.6.0", features = [
     "stable_memory",
